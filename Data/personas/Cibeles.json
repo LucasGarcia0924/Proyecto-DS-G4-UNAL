@@ -1,0 +1,27 @@
+{
+  "nombre": "Cibeles",
+  "arcano": "Amantes",
+  "nivel": 67,
+  "posiblesFusiones": [
+    { "con": ["Orfeo"], "resultado": "Dominio" },
+    { "con": ["Apsaras"], "resultado": "Orobas" },
+    { "con": ["Pixie"], "resultado": "Reina Medb" }
+  ],
+  "generadoPor": [
+    { "de": ["Daisoujou", "Kikuri-Hime"] },
+    { "de": ["Mot", "Gabriel"]},
+    { "de": ["Melquizedek", "Decarabia"]}
+  ],
+  "fusionEspecial": [
+  ],
+  "requiereSocialLink": {
+    "npc": "Yukari"
+  },
+  "estadísticas": {
+    "fuerza": 39,
+    "magia": 54,
+    "resistencia": 40,
+    "agilidad": 42,
+    "suerte": 45
+  }
+}

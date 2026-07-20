@@ -1,0 +1,26 @@
+{
+  "nombre": "Jack Frost",
+  "arcano": "Mago",
+  "nivel": 8,
+  "posiblesFusiones": [
+    { "con": ["Orfeo"], "resultado": "Omoikane" },
+    { "con": ["Apsaras"], "resultado": "Arcangel" },
+    { "con": ["Pixie"], "resultado": "Ara Mitama" }
+  ],
+  "generadoPor": [
+    { "de": ["Siky", "Apsaras"] },
+    { "de": ["Pixie", "Omoikane"]},
+    { "de": ["Angel", "Ara Mitama"]}
+  ],
+  "fusionEspecial": [
+  ],
+  "requiereSocialLink": {
+  },
+  "estadísticas": {
+    "fuerza": 5,
+    "magia": 9,
+    "resistencia": 8,
+    "agilidad": 6,
+    "suerte": 4
+  }
+}
