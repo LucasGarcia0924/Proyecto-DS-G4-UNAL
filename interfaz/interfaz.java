@@ -19,16 +19,6 @@ public class interfaz {
     private final vista.consola consola;
     private boolean finPrograma;
     private final Scanner escaner;
-    /*private Grafo grafo;
-    private Jugador jugador;
-    private consola consola;
-    private String civilizacionActual;
-    private String dificultad;
-    private final int[] costosMejoraAtaque = {30, 40, 55, 70, 90};
-    private final int[] costosMejoraDefensa = {30, 40, 55, 70, 90};
-    private int nivelMejoraAtaque;
-    private int nivelMejoraDefensa;
-    */
 
     public interfaz() {
         this.consola = new consola();
@@ -103,7 +93,7 @@ public class interfaz {
         tu.contraseña = hash;
         tu.preguntaHash = pregunta;
         tu.respuestaHash = respuestaHash;
-        tu.team = new ArrayList<>();
+        tu.equipo = new ArrayList<>();
         tu.owned = new HashSet<>();
         tu.socialLinks = new HashMap<>();
         for (String npc : Arrays.asList("Yukari","Junpei","Mitsuru","Akihiko","Fuuka","Koromaru","Ken","Shinjiro")) {

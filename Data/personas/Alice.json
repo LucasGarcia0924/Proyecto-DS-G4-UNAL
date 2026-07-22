@@ -1,20 +1,20 @@
 {
   "nombre": "Alice",
-  "arcano": "Muerte",
+  "arcano": "Death",
   "nivel": 68,
   "posiblesFusiones": [
-    { "con": ["Orfeo"], "resultado": "Clotho" },
-    { "con": ["Apsaras"], "resultado": "Dominio" },
-    { "con": ["Pixie"], "resultado": "Vizuki" }
+    { "con": ["Orpheus"], "resultado": "Clotho" },
+    { "con": ["Apsaras"], "resultado": "Dominion" },
+    { "con": ["Pixie"], "resultado": "Vazuki" }
   ],
   "generadoPor": [
   ],
   "fusionEspecial": [
-    { "de": ["Pixie, Lilim, Narciso, Titania"]}
+    { "de": ["Pixie, Lilim, Narcissus, Titania"]}
   ],
-  "requiereSocialLink": {
+  "requisitoFusion": {
   },
-  "estadísticas": {
+  "estadisticas": {
     "fuerza": 35,
     "magia": 62,
     "resistencia": 31,

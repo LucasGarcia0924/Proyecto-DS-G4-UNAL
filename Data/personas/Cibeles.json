@@ -1,23 +1,23 @@
 {
-  "nombre": "Cibeles",
-  "arcano": "Amantes",
+  "nombre": "Cybele",
+  "arcano": "Lovers",
   "nivel": 67,
   "posiblesFusiones": [
-    { "con": ["Orfeo"], "resultado": "Dominio" },
+    { "con": ["Orpheus"], "resultado": "Dominion" },
     { "con": ["Apsaras"], "resultado": "Orobas" },
-    { "con": ["Pixie"], "resultado": "Reina Medb" }
+    { "con": ["Pixie"], "resultado": "Queen Medb" }
   ],
   "generadoPor": [
     { "de": ["Daisoujou", "Kikuri-Hime"] },
     { "de": ["Mot", "Gabriel"]},
-    { "de": ["Melquizedek", "Decarabia"]}
+    { "de": ["Melchizedek", "Decarabia"]}
   ],
   "fusionEspecial": [
   ],
-  "requiereSocialLink": {
-    "npc": "Yukari"
+  "requisitoFusion": {
+    "socialLink": "Yukari Takeba"
   },
-  "estadísticas": {
+  "estadisticas": {
     "fuerza": 39,
     "magia": 54,
     "resistencia": 40,

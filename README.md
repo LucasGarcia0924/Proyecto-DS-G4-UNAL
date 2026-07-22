@@ -4,6 +4,7 @@
 #### Integrantes
   - Mauricio Cepeda
   - Lucas García
+  - Camilo Ortega
   - Cristian David Prada
 
 ## Planteamiento
