@@ -1,0 +1,20 @@
+{
+  "nombreUsuario" : "test3",
+  "contraseña" : "moXa9IF87cILej56ES5WfxPXhNTuahQdGDw116G3jis=",
+  "preguntaHash" : "ardilla?",
+  "respuestaHash" : "Dhtv/K3aR3+CVW4YHROdxx3SkUBJW2/1PgVAVL/kjqk=",
+  "salt" : "+K/jrpOl8RhemEAVjOmWdg==",
+  "equipo" : [ "Orpheus" ],
+  "owned" : [ ],
+  "socialLinks" : {
+    "Akihiko" : 0,
+    "Shinjiro" : 0,
+    "Ken" : 0,
+    "Mitsuru" : 0,
+    "Junpei" : 0,
+    "Yukari" : 0,
+    "Koromaru" : 0,
+    "Fuuka" : 0
+  },
+  "lastModified" : "2026-07-23T21:20:38.752Z"
+}

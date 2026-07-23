@@ -1,0 +1,20 @@
+{
+  "nombreUsuario" : "test2",
+  "contraseña" : "pYr1i8AScaHw98r6Xo52zed9Dr7cM+SSx+sLslmFSCM=",
+  "preguntaHash" : "gato?",
+  "respuestaHash" : "iUByPs+D/uTGtc3pGcYMrogvVfwwZkwS6BWZLwcTOss=",
+  "salt" : "16gxOiKvRO+RCEWhR0XU/Q==",
+  "equipo" : [ "Orpheus" ],
+  "owned" : [ ],
+  "socialLinks" : {
+    "Akihiko" : 0,
+    "Shinjiro" : 0,
+    "Ken" : 0,
+    "Mitsuru" : 0,
+    "Junpei" : 0,
+    "Yukari" : 0,
+    "Koromaru" : 0,
+    "Fuuka" : 0
+  },
+  "lastModified" : "2026-07-23T21:20:09.252Z"
+}

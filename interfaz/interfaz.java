@@ -44,21 +44,27 @@ public class interfaz {
         try {
             while (!finPrograma) {
             consola.mostrarMenuPrincipal();
-            String opcion = System.console().readLine();
+            String opcion = escaner.nextLine();
             switch (opcion) {
                 // Lógica para llamar a las funciones que se encargan de cada opción del menú
                 case "1":
                     verEquipo();
+                        break;
                 case "2":
                     verRegistro();
+                        break;
                 case "3":
                     verSocialLinks();
+                        break;
                 case "4":
                     buscarPersona();
+                        break;
                 case "5":
                     verFusionesEspeciales();
+                        break;
                 case "6":
                     cambiarUsuario();
+                        break;
                 case "7":
                     finPrograma = true;
                     System.out.println("Éxitos en el juego. ¡Hasta la próxima!");
@@ -88,7 +94,7 @@ public class interfaz {
         String hash = PasswordUtil.hashPassword(contraseña, salt);
         String respuestaHash = PasswordUtil.hashPassword(respuesta, salt);
 
-        usuario.User tu = usuario.new User();
+        usuario.User tu = new modelos.usuario.User();;
         tu.nombreUsuario = nombreUsuario;
         tu.salt = salt;
         tu.contraseña = hash;

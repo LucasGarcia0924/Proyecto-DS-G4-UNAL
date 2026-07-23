@@ -40,7 +40,7 @@ public class usuario {
         this.usuarioActivo = null;
     }
 
-    public class User {
+    public static class User {
         public String nombreUsuario;
         public String contraseña; // base64
         public String preguntaHash; // base64

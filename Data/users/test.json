@@ -1,0 +1,20 @@
+{
+  "nombreUsuario" : "test",
+  "contraseña" : "ax3ATumlOsofdReFXYTs6C3JxFU+IYrZSpC3634wvRk=",
+  "preguntaHash" : "perro?",
+  "respuestaHash" : "2FsJNXcdSi1u0qoq0AKXxSFMWRttbPOXcvQCkFVZjIc=",
+  "salt" : "ZKpHgQeOcd6nh2kFZKX1Eg==",
+  "equipo" : [ "Orpheus" ],
+  "owned" : [ ],
+  "socialLinks" : {
+    "Akihiko" : 0,
+    "Shinjiro" : 0,
+    "Ken" : 0,
+    "Mitsuru" : 0,
+    "Junpei" : 0,
+    "Yukari" : 0,
+    "Koromaru" : 0,
+    "Fuuka" : 0
+  },
+  "lastModified" : "2026-07-23T21:17:05.567Z"
+}
