@@ -14,11 +14,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import modelos.engine.*;
+import vista.consola;
+import interfaz.interfaz;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -27,8 +30,14 @@ import javax.crypto.spec.PBEKeySpec;
  * Clase que administra la información del usuario activo.
  */
 public class usuario {
+    private final Scanner escaner;
+    private final consola consola;
+    public User usuarioActivo;
+
     public usuario() {
-        // Constructor
+        this.escaner = new Scanner(System.in);
+        this.consola = new consola();
+        this.usuarioActivo = null;
     }
 
     public class User {
@@ -97,6 +106,32 @@ public class usuario {
             return null;
         }
 
+        public User recobrarContraseña() throws Exception {
+            System.out.print("Ingresa tu nombre de usuario: ");
+            String username = escaner.nextLine();
+
+            User u = getUser(username);
+            if (u == null) {
+                System.out.println("Usuario no encontrado.");
+                return null;
+            }
+
+            System.out.println("Pregunta de seguridad: " + u.preguntaHash);
+            System.out.print("Ingresa tu respuesta: ");
+            String respuesta = escaner.nextLine();
+
+            if (PasswordUtil.verifyPassword(respuesta, u.salt, u.respuestaHash)) {
+                System.out.print("Ingresa tu nueva contraseña: ");
+                String nuevaContraseña = escaner.nextLine();
+                String nuevaHash = PasswordUtil.hashPassword(nuevaContraseña, u.salt);
+                u.contraseña = nuevaHash;
+                saveUser(u);
+                return u;
+            }
+
+            return null;
+        }
+
         public synchronized void saveUser(User u) throws IOException {
             u.lastModified = Instant.now().toString();
             Path out = usersDir.resolve(u.nombreUsuario + ".json");
@@ -104,7 +139,11 @@ public class usuario {
         }
 
         public User getUser(String username) { return users.get(username.toLowerCase()); }
-    }
+
+        public User getUsuarioActivo() { return usuarioActivo; }
+
+        public void setUsuarioActivo(User usuarioActivo) {usuario.this.usuarioActivo = usuarioActivo; }
+
         public void cargarEquipo() {
             // Lógica para cargar el equipo del usuario
         }
@@ -114,8 +153,9 @@ public class usuario {
         public void cargarSL() {
             // Lógica para cargar los SL del usuario
         }
+    }
 
-     class UserView {
+    class UserView {
         public final User usuario;
         public final engine.Registro registro;
         public final engine.indiceFusiones indiceF;
@@ -235,4 +275,85 @@ public class usuario {
             return newly;
         }
     }
+    public void seleccionarUsuario() throws Exception {
+        consola.menuUsuarios();
+
+        boolean flag = true;
+        while (flag == true) {
+            String opcion = escaner.nextLine();
+            switch (opcion) {
+                case "1" : {
+                    iniciarSesion();
+                    flag = false;
+                    break;
+                }
+                case "2" : {
+                    interfaz interfaz = new interfaz();
+                    interfaz.crearUsuario();
+                    flag = false;    
+                    break;
+                }
+                case "3" : {
+                // Se rompe el bucle de selección pero no se continua el proceso de cambio de usuario
+                    flag = false;    
+                    break;
+                }
+                default:
+                     System.out.println("Opción no válida. Por favor, seleccione '1' o '2'.");
+                break;     
+            }
+            // Se rompe el bucle de selección y se continua el proceso de cambio de usuario
+                    }
     }
+    public void iniciarSesion() throws Exception {
+        managerUsuario mU = new managerUsuario();
+        System.out.print("Ingresa tu nombre de usuario: ");
+        String nombreUsuario = escaner.nextLine();
+        System.out.print("Ingresa tu contraseña: ");
+        String contraseña = escaner.nextLine();
+
+        User user = mU.authenticate(nombreUsuario, contraseña);
+        if (user != null) {
+            System.out.println("Inicio de sesión exitoso. ¡Bienvenido, " + user.nombreUsuario + "!");
+            // Aquí puedes continuar con la lógica del programa después de un inicio de sesión exitoso
+            mU.setUsuarioActivo(user);
+
+        } else {
+            for (int i = 0; i < 3; i++){
+                System.out.println("Nombre de usuario o contraseña incorrectos. Intenta nuevamente.");
+                System.out.print("Ingresa tu nombre de usuario: ");
+                nombreUsuario = escaner.nextLine();
+                System.out.print("Ingresa tu contraseña: ");
+                contraseña = escaner.nextLine();
+                user = mU.authenticate(nombreUsuario, contraseña);
+                if (user != null) {
+                    System.out.println("Inicio de sesión exitoso. ¡Bienvenido, " + user.nombreUsuario + "!");
+                    mU.setUsuarioActivo(user);
+                    return; // Salir del método después de un inicio de sesión exitoso
+                }
+            }
+            System.out.println("Has excedido el número máximo de intentos.");
+            System.out.println("¿Deseas recuperar tu contraseña? (s/n): ");
+            String opcion = escaner.nextLine();
+            while (!opcion.equalsIgnoreCase("s") && !opcion.equalsIgnoreCase("n")) {
+                System.out.println("Opción no válida. Por favor, selecciona 's' o 'n'.");
+                System.out.print("¿Deseas recuperar tu contraseña? (s/n): ");
+                opcion = escaner.nextLine();
+                if (opcion.equalsIgnoreCase("s")) {
+                    user = mU.recobrarContraseña();
+                    if (user != null) {
+                            iniciarSesion(); // Volver a iniciar sesión después de actualizar la contraseña
+                            return; // Salir del método después de actualizar la contraseña
+                        } else {
+                            System.out.println("Respuesta incorrecta. No se pudo recuperar la contraseña.");
+                        }
+                }
+                else if (opcion.equalsIgnoreCase("n")) {
+                    System.out.println("Regresando al menú principal.");
+                }
+            }
+            System.out.println("Nombre de usuario o contraseña incorrectos. Intenta nuevamente.");
+            seleccionarUsuario(); // Volver a la selección de usuario
+        }
+    }
+}

@@ -33,18 +33,16 @@ public class interfaz {
     public void iniciar() {
         
         consola.mostrarBienvenida();
-        
-        // 1. Cargar el usuario
-        
-        // Pide user y contraseña, la verifica y sino crea uno nuevo
 
-        usuario.cargarEquipo();
-        usuario.cargarRegistro();
-        usuario.cargarSL();
+        try {
+            usuario.seleccionarUsuario();
+        } catch (Exception e) {
+            System.out.println("Error al seleccionar usuario: " + e.getMessage());
+        }
         
         // 2. Mostrar menú principal
-        
-        while (!finPrograma) {
+        try {
+            while (!finPrograma) {
             consola.mostrarMenuPrincipal();
             String opcion = System.console().readLine();
             switch (opcion) {
@@ -68,6 +66,9 @@ public class interfaz {
                 default:
                     System.out.println("Opción no válida. Por favor, seleccione una opción del 1 al 7.");
             }
+        }
+        } catch (Exception e) {
+            System.out.println("Error durante la ejecución del programa: " + e.getMessage());
         }
     }
     public synchronized void crearUsuario() throws Exception {
@@ -93,7 +94,7 @@ public class interfaz {
         tu.contraseña = hash;
         tu.preguntaHash = pregunta;
         tu.respuestaHash = respuestaHash;
-        tu.equipo = new ArrayList<>();
+        tu.equipo = new ArrayList<>(Arrays.asList("Orpheus"));
         tu.owned = new HashSet<>();
         tu.socialLinks = new HashMap<>();
         for (String npc : Arrays.asList("Yukari","Junpei","Mitsuru","Akihiko","Fuuka","Koromaru","Ken","Shinjiro")) {
@@ -104,9 +105,19 @@ public class interfaz {
         mU.saveUser(tu);
         System.out.println("Usuario creado exitosamente.");
     }
-    public void verEquipo() {
+    public void verEquipo() throws Exception {
         // Implementar la lógica para ver y administrar el equipo del usuario
+        usuario.managerUsuario mU = usuario.new managerUsuario();
+        usuario.User tu = mU.getUsuarioActivo();
 
+        if (tu == null) {
+            System.out.println("No hay usuario activo. Por favor, inicia sesión o crea un usuario.");
+        }
+        else {
+            System.out.println("Usuario activo: " + tu.nombreUsuario);
+            System.out.println("Equipo actual: ");
+            
+        }
     }
     public void verRegistro() {
         // Implementar la lógica para ver y administrar el registro del usuario
@@ -123,16 +134,19 @@ public class interfaz {
     public void cambiarUsuario() {
         // Implementar la lógica para cambiar de usuario
         boolean bandera = false;
-        while (bandera == false) {
+        boolean flag = true;
+        while (flag == true) {
             System.out.print("¿Desea cambiar de usuario? (s/n): ");
             String opcion = escaner.nextLine();
             switch (opcion.toLowerCase()) {
                 case "s" : {
+                    bandera = true;
+                    flag = false;
                     break;
                 }
                 case "n" : {
                 // Se rompe el bucle de selección pero no se continua el proceso de cambio de usuario
-                    bandera = true;
+                    flag = false;    
                     break;
                 }
                 default:
@@ -143,10 +157,10 @@ public class interfaz {
                     }
         if (bandera == true){
             try {
-                crearUsuario();
+                usuario.seleccionarUsuario();
             } 
             catch (Exception e) {
-                System.out.println("Error al crear usuario: " + e.getMessage());
+                System.out.println("Error al escoger usuario: " + e.getMessage());
             }
         }
     }
