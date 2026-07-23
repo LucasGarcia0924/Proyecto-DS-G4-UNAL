@@ -56,7 +56,7 @@ public class engine {
     REGISTRY: Lista enlazada + índice auxiliar
     --------------------------- */
     class Registro {
-        static class Node {
+        class Node {
             Persona dato;
             Node next;
             Node(Persona p) { dato = p; next = null; }

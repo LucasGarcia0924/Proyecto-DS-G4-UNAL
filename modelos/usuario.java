@@ -44,7 +44,7 @@ public class usuario {
         public User() {}
 }
 
-    public class PasswordUtil {
+    public static class PasswordUtil {
         private static final int SALT_BYTES = 16;
         private static final int HASH_BYTES = 32;
         private static final int ITERATIONS = 100_000;

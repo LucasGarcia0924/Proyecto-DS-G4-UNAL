@@ -127,15 +127,17 @@ public class interfaz {
             System.out.print("¿Desea cambiar de usuario? (s/n): ");
             String opcion = escaner.nextLine();
             switch (opcion.toLowerCase()) {
-                case "s" -> {
+                case "s" : {
                     break;
                 }
-                case "n" -> {
+                case "n" : {
                 // Se rompe el bucle de selección pero no se continua el proceso de cambio de usuario
                     bandera = true;
                     break;
                 }
-                default -> System.out.println("Opción no válida. Por favor, seleccione 's' o 'n'.");
+                default:
+                     System.out.println("Opción no válida. Por favor, seleccione 's' o 'n'.");
+                break;     
             }
             // Se rompe el bucle de selección y se continua el proceso de cambio de usuario
                     }
