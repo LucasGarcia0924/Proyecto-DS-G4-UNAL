@@ -14,38 +14,38 @@ public class engine {
         /* ---------------------------
     MODELOS JSON / DOM
     --------------------------- */
-    class Persona {
+    public static class Persona {
         public String nombre;
         public String arcano;
         public int nivel;
         public List<FusionEntry> posiblesFusiones;
         public List<GeneratedByEntry> generadoPor;
         public List<specialEntry> fusionEspecial;
-        public List<requiresEntry> requisitoFusion;
-        public Map<String,Object> stats;
+        public Map<String,Object> requisitoFusion;
+        public Map<String,Object> estadisticas;
 
         public Persona() {}
         @Override public String toString() { return nombre + " [" + arcano + " Lv:" + nivel + "]"; }
     }
 
-    class FusionEntry {
-        public String con;   // Pareja de fusión
+    public static class FusionEntry {
+        public List<String> con;   // Pareja de fusión
         public String resultado; // Persona obtenida
     }
 
-    class GeneratedByEntry {
+    public static class GeneratedByEntry {
         public List<String> de; // Lista de personas
     }
 
-    class specialEntry {
+    public static class specialEntry {
         public List<String> de; // Lista de personas
     }
 
-    class requiresEntry {
+    public static class requiresEntry {
         public String socialLink; 
     }
 
-    class NPC {
+    public static class NPC {
         public String nombre;
         public int nivelActual; // 0..10
         public String desbloquea; // Persona desbloqueada al nivel 10
@@ -55,8 +55,8 @@ public class engine {
     /* ---------------------------
     REGISTRY: Lista enlazada + índice auxiliar
     --------------------------- */
-    class Registro {
-        class Node {
+    public static class Registro {
+        public static class Node {
             Persona dato;
             Node next;
             Node(Persona p) { dato = p; next = null; }
@@ -108,7 +108,7 @@ public class engine {
     /* ---------------------------
     indicePorNivel: TreeMap<Integer, List<Persona>>
     --------------------------- */
-    class indicePorNivel {
+    public static class indicePorNivel {
         private final TreeMap<Integer, List<Persona>> indice = new TreeMap<>();
 
         public void buildFrom(Collection<Persona> personas) {
@@ -142,7 +142,7 @@ public class engine {
     /* ---------------------------
     SocialGraph: NPCs y desbloqueos
     --------------------------- */
-    class grafoSocialLinks {
+    public static class grafoSocialLinks {
         private final Map<String, NPC> npcs = new HashMap<>();
 
         public void contruirDe(List<NPC> npcList) {
@@ -167,7 +167,7 @@ public class engine {
     /* ---------------------------
     FusionIndex: HashMaps en memoria
     --------------------------- */
-    class indiceFusiones {
+    public static class indiceFusiones {
         private final Map<String, String> indicePar = new HashMap<>();
 
         private String keyNames(List<String> names) {
@@ -181,11 +181,14 @@ public class engine {
             for (Persona p : personas) {
                 if (p.posiblesFusiones == null) continue;
                 for (FusionEntry fe : p.posiblesFusiones) {
-                    String k = keyNames(Arrays.asList(p.nombre, fe.con));
+                    List<String> nombres = new ArrayList<>();
+                    nombres.add(p.nombre);
+                    nombres.addAll(fe.con);
+                    String k = keyNames(nombres);
                     indicePar.put(k, fe.resultado);
-                    }
-                    }
                 }
+            }
+        }
 
         // Obtener resultados entre dos personas
         public List<String> resultadoFusion(engine.Persona a, engine.Persona b) {
@@ -199,7 +202,7 @@ public class engine {
     /* ---------------------------
     TEAM: arreglo fijo con liberar persona
     --------------------------- */
-    class Equipo {
+    public static class Equipo {
         private final Persona[] miembros;
         private final int capacidad;
 

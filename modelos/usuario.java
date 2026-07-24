@@ -51,6 +51,44 @@ public class usuario {
         public Map<String,Integer> socialLinks = new HashMap<>();
         public String lastModified;
         public User() {}
+
+        public boolean addTeamMember(String nombrePersona) {
+            if (nombrePersona == null || nombrePersona.isBlank()) return false;
+            return equipo.add(nombrePersona);
+        }
+
+        public boolean removeTeamMember(String nombrePersona) {
+            if (nombrePersona == null || nombrePersona.isBlank()) return false;
+            return equipo.removeIf(n -> n.equalsIgnoreCase(nombrePersona));
+        }
+
+        public boolean registerOwned(String nombrePersona) {
+            if (nombrePersona == null || nombrePersona.isBlank()) return false;
+            return owned.add(nombrePersona);
+        }
+
+        public boolean hasOwned(String nombrePersona) {
+            if (nombrePersona == null || nombrePersona.isBlank()) return false;
+            return owned.contains(nombrePersona);
+        }
+
+        public int getSocialLinkLevel(String npcName) {
+            if (npcName == null || npcName.isBlank()) return 0;
+            return socialLinks.getOrDefault(npcName, 0);
+        }
+
+        public void setSocialLinkLevel(String npcName, int nivel) {
+            if (npcName == null || npcName.isBlank()) return;
+            socialLinks.put(npcName, Math.max(0, Math.min(10, nivel)));
+        }
+
+        public int increaseSocialLinkLevel(String npcName, int delta) {
+            if (npcName == null || npcName.isBlank()) return 0;
+            int nuevoNivel = getSocialLinkLevel(npcName) + delta;
+            int nivelNormalizado = Math.max(0, Math.min(10, nuevoNivel));
+            socialLinks.put(npcName, nivelNormalizado);
+            return nivelNormalizado;
+        }
 }
 
     public static class PasswordUtil {
@@ -79,7 +117,7 @@ public class usuario {
     }
 
     public class managerUsuario {
-        private final Path usersDir = Paths.get("data/users");
+        private final Path usersDir = Paths.get("Data/users");
         private final ObjectMapper M = new ObjectMapper();
         private final ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
@@ -155,7 +193,7 @@ public class usuario {
         }
     }
 
-    class UserView {
+    public class UserView {
         public final User usuario;
         public final engine.Registro registro;
         public final engine.indiceFusiones indiceF;
@@ -169,75 +207,123 @@ public class usuario {
             this.indiceF = fusionIndex;
             this.grafoS = socialGraph;
             this.indiceN = levelIndex;
-            this.equipo = new engine().new Equipo(teamCapacity);
+            this.equipo = new engine.Equipo(teamCapacity);
             resolveTeamFromUser();
         }
 
         // Resuelve nombres del usuario a referencias Persona y llena Team si hay espacio
         private void resolveTeamFromUser() {
-            equipo.mostrarEquipo(); 
             for (String name : usuario.equipo) {
                 Persona p = registro.buscarPorNombre(name);
                 if (p != null) equipo.agregarPersona(p);
             }
         }
 
-        // 1) Liberar persona del equipo
-        public boolean releaseFromTeam(String nombrePersona) throws IOException {
+        public List<Persona> getEquipoComoPersonas() {
+            List<Persona> miembros = new ArrayList<>();
+            for (String name : usuario.equipo) {
+                Persona p = registro.buscarPorNombre(name);
+                if (p != null) miembros.add(p);
+            }
+            return miembros;
+        }
+
+        public void mostrarEquipoDetallado() {
+            System.out.println("Equipo actual:");
+            List<Persona> miembros = getEquipoComoPersonas();
+            if (miembros.isEmpty()) {
+                System.out.println("<vacío>");
+                return;
+            }
+
+            for (Persona p : miembros) {
+                System.out.println("- " + p.nombre + " | Arcano: " + p.arcano + " | Nivel: " + p.nivel);
+            }
+        }
+
+        public engine.Equipo buildTeamFromUser(int capacity) {
+            engine.Equipo runtimeTeam = new engine.Equipo(capacity);
+            for (String name : usuario.equipo) {
+                Persona p = registro.buscarPorNombre(name);
+                if (p != null) runtimeTeam.agregarPersona(p);
+            }
+            return runtimeTeam;
+        }
+
+        public void syncTeamFromRuntime(engine.Equipo runtimeTeam) {
+            usuario.equipo.clear();
+            for (Persona p : runtimeTeam.getMiembros()) {
+                if (p != null) usuario.equipo.add(p.nombre);
+            }
+        }
+
+        public boolean releaseFromTeam(String nombrePersona, managerUsuario um) throws IOException {
             boolean removed = equipo.liberarPersona(nombrePersona);
             if (removed) {
                 usuario.equipo.removeIf(n -> n.equalsIgnoreCase(nombrePersona));
-                // persistir cambios mínimos
+                um.saveUser(usuario);
                 return true;
             }
             return false;
         }
 
-        // 2) Marcar automáticamente personas NO registradas previamente (owned false) -> owned true
-        public List<String> autoRegisterUnlocked(List<String> personaNames) throws IOException {
-            List<String> newly = new ArrayList<>();
-            for (String nombre : personaNames) {
-                if (!usuario.owned.contains(nombre)) {
-                    usuario.owned.add(nombre);
-                    newly.add(nombre);
-                }
+        public boolean autoRegister(String nombrePersona, managerUsuario um) throws IOException {
+            if (usuario.hasOwned(nombrePersona)){
+                return false;
             }
-            return newly;
+            usuario.registerOwned(nombrePersona);
+            um.saveUser(usuario);
+            return true;
         }
 
-        // 3) Añadir persona ya registrada al equipo si hay espacio
-        public boolean addRegisteredToTeam(String personaName) throws IOException {
-            if (!usuario.owned.contains(personaName)) return false; // no está registrada
-            if (!equipo.tieneEspacio()) return false;
-            Persona p = registro.buscarPorNombre(personaName);
-            if (p == null) return false;
+        public boolean isOnTeam(String nombrePersona, managerUsuario um) throws IOException {
+            if (nombrePersona == null || nombrePersona.isBlank()) return false;
+            for (Persona p : equipo.getMiembros()) {
+                if (p == null) continue;
+                if (p.nombre != null && p.nombre.equalsIgnoreCase(nombrePersona)) return true;
+            }
+            return false;
+        }
+
+        public boolean addToTeam(String nombrePersona, managerUsuario um) throws IOException {
+            if (!equipo.tieneEspacio()){
+                System.out.print("El equipo está lleno.");
+                return false;
+            }
+            if (isOnTeam(nombrePersona, um)){
+                System.out.println("Persona ya en el equipo.");
+
+            }
+            Persona p = registro.buscarPorNombre(nombrePersona);
+            if (p == null) {
+                System.out.print("Nombre incorrecto, no se halló la Persona.");
+                return false;
+            }
             boolean ok = equipo.agregarPersona(p);
             if (ok) {
-                usuario.equipo.add(personaName);
+                usuario.addTeamMember(nombrePersona);
+                um.saveUser(usuario);
                 return true;
             }
             return false;
         }
 
-        // 4) Imprimir registro (con owned flag del usuario)
+
         public void printRegistryWithOwned() {
             System.out.println("Registro (owned marcado):");
             for (Persona p : registro.toList()) {
-                System.out.println((usuario.owned.contains(p.nombre) ? "[X] " : "[ ] ") + p);
+                System.out.println((usuario.hasOwned(p.nombre) ? "[X] " : "[ ] ") + p);
             }
         }
 
-        // 5+6) Fusionar dos personas del equipo: si resultado no registrado, registrar; remover los dos y añadir resultado
         public boolean fuseAndReplace(String nameA, String nameB, managerUsuario um) throws IOException {
             Persona a = registro.buscarPorNombre(nameA);
             Persona b = registro.buscarPorNombre(nameB);
             if (a == null || b == null) return false;
             // comprobar que ambos están en el equipo (por referencia)
             boolean inTeamA = false, inTeamB = false;
-            for (Persona p : equipo.getMiembros()) {
-                if (p == a) inTeamA = true;
-                if (p == b) inTeamB = true;
-            }
+            inTeamA = isOnTeam(nameA, um);
+            inTeamB = isOnTeam(nameB, um);
             if (!inTeamA || !inTeamB) return false;
 
             List<String> results = indiceF.resultadoFusion(a, b);
@@ -251,17 +337,18 @@ public class usuario {
             }
 
             // 5) Si usuario no tiene registrado el resultado, marcarlo automáticamente
-            if (!usuario.owned.contains(resultName)) {
-                usuario.owned.add(resultName);
+            if (!usuario.hasOwned(resultName)) {
+                usuario.registerOwned(resultName);
             }
 
             // 6) Remover las dos personas del equipo y añadir el resultado (si hay espacio)
             equipo.removerPersona(a);
             equipo.removerPersona(b);
             // también actualizar user.team (nombres)
-            usuario.equipo.removeIf(n -> n.equalsIgnoreCase(a.nombre) || n.equalsIgnoreCase(b.nombre));
+            usuario.removeTeamMember(a.nombre);
+            usuario.removeTeamMember(b.nombre);
             boolean added = equipo.agregarPersona(resultPersona);
-            if (added) usuario.equipo.add(resultName);
+            if (added) usuario.addTeamMember(resultName);
             // persistir cambios del usuario
             um.saveUser(usuario);
             return true;
@@ -269,8 +356,15 @@ public class usuario {
 
         // Incrementar social link y auto registrar desbloqueos
         public List<String> increaseSocialLinkAndHandleUnlock(String npcName, int delta, managerUsuario um) throws IOException {
+            int nuevoNivel = usuario.increaseSocialLinkLevel(npcName, delta);
             List<String> unlocked = grafoS.aumentarRango(npcName, delta);
-            List<String> newly = autoRegisterUnlocked(unlocked);
+            List<String> newly = new ArrayList<>();
+            for (String nombre : unlocked) {
+                if (!usuario.hasOwned(nombre)) {
+                    usuario.registerOwned(nombre);
+                    newly.add(nombre);
+                }
+            }
             um.saveUser(usuario);
             return newly;
         }
@@ -333,25 +427,26 @@ public class usuario {
                 }
             }
             System.out.println("Has excedido el número máximo de intentos.");
-            System.out.println("¿Deseas recuperar tu contraseña? (s/n): ");
+            System.out.print("¿Deseas recuperar tu contraseña? (s/n): ");
             String opcion = escaner.nextLine();
+
             while (!opcion.equalsIgnoreCase("s") && !opcion.equalsIgnoreCase("n")) {
                 System.out.println("Opción no válida. Por favor, selecciona 's' o 'n'.");
                 System.out.print("¿Deseas recuperar tu contraseña? (s/n): ");
                 opcion = escaner.nextLine();
-                if (opcion.equalsIgnoreCase("s")) {
-                    user = mU.recobrarContraseña();
-                    if (user != null) {
-                            iniciarSesion(); // Volver a iniciar sesión después de actualizar la contraseña
-                            return; // Salir del método después de actualizar la contraseña
-                        } else {
-                            System.out.println("Respuesta incorrecta. No se pudo recuperar la contraseña.");
-                        }
-                }
-                else if (opcion.equalsIgnoreCase("n")) {
-                    System.out.println("Regresando al menú principal.");
-                }
             }
+
+            if (opcion.equalsIgnoreCase("s")) {
+                user = mU.recobrarContraseña();
+                if (user != null) {
+                    iniciarSesion(); // Volver a iniciar sesión después de actualizar la contraseña
+                    return; // Salir del método después de actualizar la contraseña
+                }
+                System.out.println("Respuesta incorrecta. No se pudo recuperar la contraseña.");
+            } else {
+                System.out.println("Regresando al menú principal.");
+            }
+
             System.out.println("Nombre de usuario o contraseña incorrectos. Intenta nuevamente.");
             seleccionarUsuario(); // Volver a la selección de usuario
         }

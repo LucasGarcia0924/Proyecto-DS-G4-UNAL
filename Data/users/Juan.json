@@ -1,6 +1,6 @@
 {
   "nombreUsuario" : "Juan",
-  "contraseña" : "f0F8MvhCux6XJuGqnHQ2QZgi9HmT6Nlq5Q/vlv9rxp0=",
+  "contraseña" : "wSGAhqr7oeT5RAxPIVfF0+B2TepigIelkp4D8r/GBy4=",
   "preguntaHash" : "azul",
   "respuestaHash" : "AnwCxXIt7Go6Q56g1ISx/Ho45iRv+Q0JIOC8f+saT4w=",
   "salt" : "S+bTBlOsPTp2d3L0hWjGxA==",
@@ -16,5 +16,5 @@
     "Koromaru" : 0,
     "Fuuka" : 0
   },
-  "lastModified" : "2026-07-23T04:23:14.150287Z"
+  "lastModified" : "2026-07-23T22:13:26.796312800Z"
 }

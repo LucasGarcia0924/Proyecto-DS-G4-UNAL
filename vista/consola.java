@@ -22,7 +22,7 @@ public class consola {
     public void mostrarMenuPrincipal() {
         System.out.println("╔══════════════════════════════════════════════════════╗");
         System.out.println("║               Selecciona una opción válida           ║");
-        System.out.println("╚═══════════════════════════════════════════════════════╝");
+        System.out.println("╚══════════════════════════════════════════════════════╝");
         System.out.println("╔══════════════════════════════════════════════════════╗");
         System.out.println("║                  1. Ver tu Equipo actual             ║");
         System.out.println("║                  2. Ver tu Registro                  ║");
@@ -43,5 +43,40 @@ public class consola {
         System.out.println("║                  2. Crear Usuario                    ║");
         System.out.println("║                  3. Regresar                       ║");
         System.out.println("╚══════════════════════════════════════════════════════╝");
+    }
+
+    public synchronized void mostrarMenuEquipo() {
+        System.out.println("╔══════════════════════════════════════════════════════╗");
+        System.out.println("║                   MENÚ DEL EQUIPO                    ║");
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+        System.out.println("╔═════════════════════════════════════════════════════╗");
+        System.out.println("║          1. Mostrar equipo actual                   ║");
+        System.out.println("║          2. Agregar persona al equipo               ║");
+        System.out.println("║          3. Liberar persona del equipo              ║");
+        System.out.println("║          4. Volver al menú principal                ║");
+        System.out.println("╚═════════════════════════════════════════════════════╝");
+    }
+
+    public synchronized void mostrarMenuRegistro() {
+        System.out.println("╔══════════════════════════════════════════════════════╗");
+        System.out.println("║                 MENÚ DEL REGISTRO                    ║");
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+        System.out.println("╔═════════════════════════════════════════════════════╗");
+        System.out.println("║          1. Mostrar registro con ownership          ║");
+        System.out.println("║          2. Registrar persona manualmente           ║");
+        System.out.println("║          3. Agregar persona del registro al equipo  ║");
+        System.out.println("║          4. Volver al menú principal                ║");
+        System.out.println("╚═════════════════════════════════════════════════════╝");
+    }
+
+    public synchronized void mostrarMenuSocialLinks() {
+        System.out.println("╔══════════════════════════════════════════════════════╗");
+        System.out.println("║                 MENÚ DE SOCIAL LINKS                 ║");
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+        System.out.println("╔═════════════════════════════════════════════════════╗");
+        System.out.println("║          1. Mostrar social links                    ║");
+        System.out.println("║          2. Incrementar social link                 ║");
+        System.out.println("║          3. Volver al menú principal                ║");
+        System.out.println("╚═════════════════════════════════════════════════════╝");
     }
 }
